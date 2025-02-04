@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop File Upload</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f7f7f7;
+            margin: 0;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        form.dropzone {
+            width: 100%;
+            max-width: 600px;
+            border: 2px dashed #007bff;
+            border-radius: 50px;
+            background-color: rgb(241, 241, 241);
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(20, 20, 20, 0.1);
+            position: relative;
+            /* Position relative for absolute positioning */
+            min-height: 150px;
+            /* Ensure a minimum height for visibility */
+            overflow: hidden;
+            /* Hide overflow if needed */
+            text-align: center;
+        }
+
+        .dz-message {
+            display: none;
+            /* Hide default Dropzone message */
+        }
+
+        .upload-icon {
+            font-size: 38px;
+            /* Adjust icon size */
+            color: #007bff;
+            position: relative;
+            /* Position relative for text positioning */
+            margin: 0 auto;
+            /* Center icon horizontally */
+        }
+
+        .upload-text {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            form.dropzone {
+                padding: 15px;
+            }
+
+            button {
+                width: 100%;
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Drag and Drop File Upload</h1>
+    <form action="/upload" class="dropzone" id="my-dropzone">
+        <div class="upload-icon" id="upload-icon">
+            <i class="fas fa-upload"></i>
+        </div>
+        <div class="upload-text">Upload all the files</div>
+    </form>
+    <button id="submit-all">Upload All Files</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+    <script>
+        Dropzone.options.myDropzone = {
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 5, // MB
+            autoProcessQueue: false, // Prevents files from being uploaded immediately
+            init: function () {
+                var submitButton = document.querySelector("#submit-all");
+                var myDropzone = this; // closure
+
+                // Trigger file selection dialog on icon click
+                document.querySelector("#upload-icon").addEventListener("click", function () {
+                    myDropzone.hiddenFileInput.click();
+                });
+
+                submitButton.addEventListener("click", function () {
+                    myDropzone.processQueue(); // Tell Dropzone to process all queued files.
+                });
+
+                this.on("success", function (file, response) {
+                    if (file.xhr.status === 200) {
+                        myDropzone.removeAllFiles(true);
+                    }
+                });
+
+                this.on("error", function (file, response) {
+                    console.log(response); // Handle errors
+                });
+
+                // this.on("queuecomplete", function () {
+                //     myDropzone.removeAllFiles(true); // Removes all files from the Dropzone
+                //     // const statusCode = file.xhr.status;
+                // });
+            }
+        };
+    </script>
+</body>
+
+</html>
+
